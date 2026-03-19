@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-app
+  namespace: argocd
+  annotations:
+    # Enables auto-sync with self-healing (reconciles drift automatically)
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: gitops-platform
+  source:
+    repoURL: https://github.com/Learner-Gitops/control-plane.git
+    targetRevision: main
+    path: gitops-control-plane/apps/sample-app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+  syncPolicy:
+    automated:
+      prune: true        # removes resources deleted from Git
+      selfHeal: true     # reconciles any manual drift
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m

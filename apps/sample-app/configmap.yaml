@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-app-config
+  namespace: production
+  labels:
+    app: sample-app
+    managed-by: argocd
+data:
+  environment: "production"
+  log_level: "info"
+  max_connections: "100"
+  # Changing any value here and pushing to Git
+  # will trigger Argo CD to auto-sync the cluster state
